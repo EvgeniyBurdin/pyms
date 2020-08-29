@@ -1,0 +1,2 @@
+pytest==6.0.1
+validated-dc==1.2.1
