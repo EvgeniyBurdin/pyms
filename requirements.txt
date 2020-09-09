@@ -1,4 +1,5 @@
 aiohttp==3.6.2
-asyncpgsa==0.26.3  # Эта либа сама установит asyncpg и sqlalchemy
+alembic==1.4.2
+asyncpgsa==0.26.3  # Эта либа сама установит правильные asyncpg и sqlalchemy
 pytest==6.0.1
 validated-dc==1.2.1
