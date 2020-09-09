@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 from data_classes.base import ApiDC
-from data_classes.data import DataDC
 
 
 @dataclass
@@ -11,7 +10,8 @@ class RequestDC(ApiDC):
     """ Запрос к сервису.
 
         :params: Параметры.
-        :id:     Идентификатор.
+        :id:     Идентификатор запроса. Может быть установлен вызывающей
+                 стороной для идентификации ответа.
     """
-    params: DataDC
+    params: dict
     id: int = 0
