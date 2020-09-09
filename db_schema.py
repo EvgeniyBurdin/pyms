@@ -13,7 +13,7 @@ tasks_table = Table(
         "id", UUID, primary_key=True, server_default=func.uuid_generate_v4()
     ),
     Column(
-        "name", String, nullable=True
+        "name", String, nullable=False
     ),
     Column(
         "extra", JSONB
