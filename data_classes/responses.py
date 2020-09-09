@@ -20,6 +20,12 @@ class ErrorResult(ApiDC):
 
 
 @dataclass
+class SimpleResult(ApiDC):
+
+    message: str
+
+
+@dataclass
 class ResponseDC(ApiDC):
     """ Ответ от сервиса.
 

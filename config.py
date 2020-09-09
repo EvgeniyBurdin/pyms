@@ -2,7 +2,7 @@ import os
 
 if os.getenv("PYMS_SERVICE_DEV") == "1":
     # Если запуск сервиса сделать так:
-    # $ PYMS_SERVICE_DEV=1 python main.py
+    # $ PYMS_SERVICE_DEV=1 python run_service.py
     # то загрузятся переменные среды из "env/develop.env"
     from pathlib import Path
     from dotenv import load_dotenv

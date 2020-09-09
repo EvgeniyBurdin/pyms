@@ -6,6 +6,12 @@ from data_classes.base import ApiDC
 
 
 @dataclass
+class SimpleParams(ApiDC):
+
+    query: str = "How are you?"
+
+
+@dataclass
 class RequestDC(ApiDC):
     """ Запрос к сервису.
 
