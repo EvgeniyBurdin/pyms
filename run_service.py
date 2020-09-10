@@ -1,6 +1,6 @@
 from aiohttp import web
 
-from config import SERVICE_HOST, SERVICE_PORT
+from settings import SERVICE_HOST, SERVICE_PORT
 from middlewares import json_server
 from routes import routes
 
