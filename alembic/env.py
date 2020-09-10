@@ -22,29 +22,7 @@ fileConfig(config.config_file_name)
 import tables  # noqa
 target_metadata = tables.metadata
 
-
-class DatabaseSettingsError(Exception):
-    pass
-
-import settings  # noqa
-
-
-def get_connection_url() -> str:
-    """ Собирает ссылку для подключения к БД и возращает её.
-    """
-    db = settings.POSTGRES_DB
-    host = settings.POSTGRES_HOST
-    port = settings.POSTGRES_PORT
-    user = settings.POSTGRES_USER
-    password = settings.POSTGRES_PASSWORD
-
-    if not all([user, password, host, db, port]):
-        raise DatabaseSettingsError(
-            "Not all database connection settings are specified: "
-            f"{[user, password, host, db, port]}."
-        )
-
-    return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+from settings import POSTGRES_CONNECTION_URL  # noqa
 
 
 # other values from the config, defined by the needs of env.py,
@@ -65,9 +43,8 @@ def run_migrations_offline():
     script output.
 
     """
-    url = get_connection_url(),
     context.configure(
-        url=url,
+        url=POSTGRES_CONNECTION_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         # dialect_opts={"paramstyle": "named"},
@@ -85,7 +62,7 @@ def run_migrations_online():
 
     """
     connectable = engine_from_config(
-        {"db.url": get_connection_url()},
+        {"db.url": POSTGRES_CONNECTION_URL},
         prefix="db.",
         poolclass=pool.NullPool,
     )

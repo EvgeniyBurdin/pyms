@@ -19,3 +19,28 @@ POSTGRES_HOST = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_HOST")
 POSTGRES_PORT = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_PORT")
 POSTGRES_USER = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_PASSWORD")
+
+
+class DatabaseSettingsError(Exception):
+    pass
+
+
+def get_postgres_connection_url() -> str:
+    """ Собирает ссылку для подключения к БД и возращает её.
+    """
+    db = POSTGRES_DB
+    host = POSTGRES_HOST
+    port = POSTGRES_PORT
+    user = POSTGRES_USER
+    password = POSTGRES_PASSWORD
+
+    if not all([user, password, host, db, port]):
+        raise DatabaseSettingsError(
+            "Not all database connection settings are specified: "
+            f"{[user, password, host, db, port]}."
+        )
+
+    return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+
+
+POSTGRES_CONNECTION_URL = get_postgres_connection_url()
