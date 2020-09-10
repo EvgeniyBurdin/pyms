@@ -18,7 +18,33 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-target_metadata = None
+# target_metadata = None
+import tables  # noqa
+target_metadata = tables.metadata
+
+
+class DatabaseSettingsError(Exception):
+    pass
+
+import settings  # noqa
+
+
+def get_connection_url() -> str:
+    """ Собирает ссылку для подключения к БД и возращает её.
+    """
+    db = settings.POSTGRES_DB
+    host = settings.POSTGRES_HOST
+    port = settings.POSTGRES_PORT
+    user = settings.POSTGRES_USER
+    password = settings.POSTGRES_PASSWORD
+
+    if not all([user, password, host, db, port]):
+        raise DatabaseSettingsError(
+            "Not all database connection settings are specified."
+        )
+
+    return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -38,12 +64,12 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = get_connection_url(),
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        # dialect_opts={"paramstyle": "named"},
     )
 
     with context.begin_transaction():
@@ -58,8 +84,8 @@ def run_migrations_online():
 
     """
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
+        {"db.url": get_connection_url()},
+        prefix="db.",
         poolclass=pool.NullPool,
     )
 
