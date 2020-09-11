@@ -1,8 +1,7 @@
 """
     Скрипт запуска сервера.
 """
-
-from main import app
+from service import app
 from aiohttp import web
 
 from settings import SERVICE_HOST, SERVICE_PORT

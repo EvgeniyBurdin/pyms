@@ -1,7 +1,6 @@
 """
     Модуль настройки сервера.
 """
-
 from aiohttp import web
 
 from middlewares import json_server
