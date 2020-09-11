@@ -1,7 +1,7 @@
 """ Модуль для классов подключений.
 """
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any
 
 import asyncpg
@@ -90,21 +90,17 @@ class AsyncPGConnection(AsyncConnection):
 
             Созданный пул добавляется в список пулов экземпляра.
         """
-        if isinstance(params, dict):
-            params = AsyncPGConnectionParams(**params)
 
         if params is None:
             params = self.params
 
-        pool = await asyncpgsa.create_pool(
-            host=params.host,
-            port=params.port,
-            database=params.db,
-            user=params.user,
-            password=params.password,
-            min_size=params.min_size,
-            max_size=params.max_size
-        )
+        if isinstance(params, AsyncPGConnectionParams):
+            params = asdict(params)
+
+        database = params.pop('db')
+        params['database'] = database
+
+        pool = await asyncpgsa.create_pool(**params)
 
         self.current_connection = pool
 
