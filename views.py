@@ -18,7 +18,7 @@ async def simple(params: SimpleParams) -> SimpleResult:
     # Пример работы с БД
 
     # Получим коннект
-    connection = pg_connection.get()
+    connection = await pg_connection.get()
 
     # Подготовим core-sqlalchemy запрос
     core_sa_query = people_table.select().where(people_table.c.name == 'Ivan')

@@ -26,10 +26,10 @@ class AsyncConnection(ABC):
         self.params = params
         self.current_connection = None
 
-    def get(self) -> Any:
+    async def get(self) -> Any:
         """ Возвращает текущее подключение.
         """
-        return self.current_connection
+        return self.current_connection or await self.create()
 
     async def setup(self, _=None):
         """ Метод создает подключение а при повторном вызове - закрывает его.
