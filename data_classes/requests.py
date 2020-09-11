@@ -7,7 +7,10 @@ from data_classes.base import ApiDC
 
 @dataclass
 class SimpleParams(ApiDC):
+    """ Параматры для простого обработчика.
 
+        (для примера)
+    """
     query: str = "How are you?"
 
 

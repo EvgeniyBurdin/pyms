@@ -1,9 +1,8 @@
-""" Модуль настройки сервера.
+""" Модуль настройки используемых сервером сущностей.
 """
 from connections import AsyncPGConnection, AsyncPGConnectionParams
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
-
 
 # Коннект к PostgreSQL -------------------------------------------------------
 

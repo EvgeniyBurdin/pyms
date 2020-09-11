@@ -1,7 +1,7 @@
 """ Модуль датаклассов ответов.
 """
 from dataclasses import dataclass
-from typing import Union, Optional
+from typing import Optional, Union
 
 from data_classes.base import ApiDC
 
@@ -21,7 +21,10 @@ class ErrorResult(ApiDC):
 
 @dataclass
 class SimpleResult(ApiDC):
+    """ Результат от простого обработчика.
 
+        (для примера)
+    """
     message: str
 
 

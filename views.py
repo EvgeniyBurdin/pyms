@@ -1,3 +1,6 @@
+""" Обработчики запросов.
+"""
+
 from api_decorators import api_method
 from data_classes.requests import SimpleParams
 from data_classes.responses import SimpleResult

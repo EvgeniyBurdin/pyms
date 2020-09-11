@@ -1,4 +1,3 @@
-import asyncio
 import json
 from dataclasses import asdict
 
@@ -10,22 +9,9 @@ from data_classes.responses import ErrorResult, ResponseDC
 
 
 @web.middleware
-async def system_error(request, handler):
-
-    try:
-        response = await handler(request)
-        return response
-
-    except (KeyboardInterrupt, SystemExit):
-        exit(-1)
-
-    except asyncio.CancelledError:
-        return {}
-
-
-@web.middleware
 async def json_server(request, handler):
-
+    """ middleware для json сервера.
+    """
     MAX_REPR = 200
 
     def repr_(val) -> str:

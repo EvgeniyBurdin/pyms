@@ -1,4 +1,4 @@
-""" Модуль для классов соединений.
+""" Модуль для классов подключений.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -12,13 +12,15 @@ import asyncpgsa
 
 @dataclass
 class ConnectionParams:
-    """ Основные параметры соединения.
+    """ Основные параметры подключения.
     """
     host: str
     port: str
 
 
 class AsyncConnection(ABC):
+    """ Класс асинхронного подключения.
+    """
 
     def __init__(self, params: ConnectionParams):
 
@@ -26,10 +28,16 @@ class AsyncConnection(ABC):
         self.current_connection = None
 
     def get_connection(self):
+        """ Возвращает текущее подключение.
+        """
         return self.current_connection
 
     async def setup(self, _=None):
+        """ Метод создает подключение а при повторном вызове - закрывает его.
 
+            (используется для добавления в список
+            aiohttp.web.Application.cleanup_ctx при старте приложения)
+        """
         await self.create()
 
         yield
@@ -38,10 +46,15 @@ class AsyncConnection(ABC):
 
     @abstractmethod
     def create(self) -> Any:
+        """ Метод должен создать текущее подключение и вернуть его.
+        """
         pass
 
     @abstractmethod
     def close(self):
+        """ Метод должен закрыть текущее подключение.
+            (если есть несколько подключений, то закрыть и их)
+        """
         pass
 
 
@@ -62,6 +75,8 @@ class AsyncPGConnection(AsyncConnection):
 
     def __init__(self, params: AsyncPGConnectionParams):
         super().__init__(params)
+
+        # Храним все созданные пулы подключений
         self.pools = []
 
     async def create(self, params: AsyncPGConnectionParams = None

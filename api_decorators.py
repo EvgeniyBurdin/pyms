@@ -1,5 +1,4 @@
-"""
-    Модуль для декораторов
+""" Модуль для декоратора api-функций (для обработчиков запросов).
 """
 import functools
 from dataclasses import dataclass
