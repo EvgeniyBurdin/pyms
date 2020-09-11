@@ -1,5 +1,7 @@
 import os
 
+# Инициализация переменных среды (используется, например, при разработке) ----
+
 if os.getenv("PYMS_SERVICE_DEV") == "1":
     # Если запуск сервиса сделать так:
     # $ PYMS_SERVICE_DEV=1 python run_service.py
@@ -7,6 +9,9 @@ if os.getenv("PYMS_SERVICE_DEV") == "1":
     from pathlib import Path
     from dotenv import load_dotenv
     load_dotenv(Path("env/develop.env"), override=True, verbose=True)
+
+
+# Загрузка переменных среды --------------------------------------------------
 
 PYMS_ENV_VARS_PREFIX = os.getenv("PYMS_ENV_VARS_PREFIX", "")
 
@@ -20,6 +25,8 @@ POSTGRES_PORT = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_PORT")
 POSTGRES_USER = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv(f"{PYMS_ENV_VARS_PREFIX}POSTGRES_PASSWORD")
 
+
+# Формирование урла подключения к БД Постгрес --------------------------------
 
 class DatabaseSettingsError(Exception):
     pass
