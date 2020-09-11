@@ -26,7 +26,7 @@ class AsyncConnection(ABC):
         self.params = params
         self.current_connection = None
 
-    def get(self):
+    def get(self) -> Any:
         """ Возвращает текущее подключение.
         """
         return self.current_connection
@@ -116,3 +116,5 @@ class AsyncPGConnection(AsyncConnection):
         while self.pools:
             pool = self.pools.pop()
             await pool.close()
+
+        self.current_connection = None
