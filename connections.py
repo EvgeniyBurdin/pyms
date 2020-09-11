@@ -27,7 +27,7 @@ class AsyncConnection(ABC):
         self.params = params
         self.current_connection = None
 
-    def get_connection(self):
+    def get(self):
         """ Возвращает текущее подключение.
         """
         return self.current_connection
