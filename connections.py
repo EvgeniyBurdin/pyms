@@ -74,6 +74,8 @@ class AsyncPGConnect(Connect):
         return pool
 
     async def close(self):
-
-        for pool in self.pools:
+        """ Закрывает все пулы подключений экземпляра.
+        """
+        while self.pools:
+            pool = self.pools.pop()
             await pool.close()
