@@ -18,12 +18,23 @@ class ConnectionParams:
     port: str
 
 
-class Connection(ABC):
+class AsyncConnection(ABC):
 
     def __init__(self, params: ConnectionParams):
 
         self.params = params
         self.current_connection = None
+
+    def get_connection(self):
+        return self.current_connection
+
+    async def setup(self, _=None):
+
+        await self.create()
+
+        yield
+
+        await self.close()
 
     @abstractmethod
     def create(self) -> Any:
@@ -32,9 +43,6 @@ class Connection(ABC):
     @abstractmethod
     def close(self):
         pass
-
-    def get_connection(self):
-        return self.current_connection
 
 
 # ----------------------------------------------------------------------------
@@ -50,7 +58,7 @@ class AsyncPGConnectionParams(ConnectionParams):
     max_size: int = 10
 
 
-class AsyncPGConnection(Connection):
+class AsyncPGConnection(AsyncConnection):
 
     def __init__(self, params: AsyncPGConnectionParams):
         super().__init__(params)
@@ -89,11 +97,3 @@ class AsyncPGConnection(Connection):
         while self.pools:
             pool = self.pools.pop()
             await pool.close()
-
-    async def setup(self, _=None):
-
-        await self.create()
-
-        yield
-
-        await self.close()
