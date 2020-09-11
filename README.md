@@ -2,6 +2,15 @@
 
 Сервис на python.
 
+## Запуск сервиса
+
+```bash
+PYMS_SERVICE_DEV=1 python run_service.py
+```
+
+*Примечание:
+`PYMS_SERVICE_DEV=1` в этой и других командах - загружает переменные среды (см. `settings.py`)*
+
 ## Переменные среды
 
 Пример файла:
@@ -24,7 +33,7 @@ PYMS_DEV_POSTGRES_PASSWORD=0
 
 Используется Postgres.
 
-Для БД требуестя установить расширение для uuid, это можно сделать выполнив запрос к БД:
+Для БД требуется установить расширение для полей `uuid`, это можно сделать выполнив запрос:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -32,15 +41,12 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ## Миграции
 
-*Примечание:
-`PYMS_SERVICE_DEV=1` в командах - загружает переменные среды (см. `settings.py`)*
-
 Команды для работы с миграциями:
 
 - Создать файл миграции
 
 ```bash
-PYMS_SERVICE_DEV=1 alembic revision --autogenerate -m "Create pyms_people table"
+PYMS_SERVICE_DEV=1 alembic revision --autogenerate -m "Create people table"
 ```
 
 - Обновить БД до самой свежей версии (миграции)
