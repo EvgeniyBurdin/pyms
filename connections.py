@@ -45,7 +45,8 @@ class AsyncConnection(ABC):
 
     @abstractmethod
     def create(self) -> Any:
-        """ Метод должен создать текущее подключение и вернуть его.
+        """ Метод должен создать подключение, установить его свойству
+            self.current_connection и вернуть его.
         """
         pass
 
@@ -54,7 +55,7 @@ class AsyncConnection(ABC):
         """ Метод должен закрыть текущее подключение.
             (если есть несколько подключений, то закрыть и их)
         """
-        pass
+        self.current_connection = None
 
 
 # ----------------------------------------------------------------------------
@@ -106,6 +107,7 @@ class AsyncPGConnection(AsyncConnection):
         )
 
         self.current_connection = pool
+
         self.pools.append(pool)
 
         return pool
@@ -117,4 +119,4 @@ class AsyncPGConnection(AsyncConnection):
             pool = self.pools.pop()
             await pool.close()
 
-        self.current_connection = None
+        super().close()
