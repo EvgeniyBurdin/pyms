@@ -31,11 +31,11 @@ class AsyncConnection(ABC):
         """
         return self.current_connection or await self.create()
 
-    async def setup(self, _=None):
+    async def setup(self, _=None) -> None:
         """ Метод создает подключение а при повторном вызове - закрывает его.
 
             (используется для добавления в список
-            aiohttp.web.Application.cleanup_ctx при старте приложения)
+             aiohttp.web.Application.cleanup_ctx при старте приложения)
         """
         await self.create()
 
@@ -51,7 +51,7 @@ class AsyncConnection(ABC):
         pass
 
     @abstractmethod
-    async def close(self):
+    async def close(self) -> None:
         """ Метод должен закрыть текущее подключение.
             (если есть несколько подключений, то закрыть и их)
         """
@@ -107,7 +107,7 @@ class AsyncPGConnection(AsyncConnection):
 
         return pool
 
-    async def close(self):
+    async def close(self) -> None:
         """ Закрывает все пулы подключений экземпляра.
         """
         while self.pools:
