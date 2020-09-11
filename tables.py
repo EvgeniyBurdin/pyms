@@ -5,9 +5,9 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 metadata = MetaData()
 
 
-tasks_table = Table(
+people = Table(
 
-    "pyms_people", metadata,
+    "people", metadata,
 
     Column(
         "id", UUID, primary_key=True, server_default=func.uuid_generate_v4()
