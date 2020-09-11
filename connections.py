@@ -1,5 +1,4 @@
-"""
-    Модуль для классов соединений.
+""" Модуль для классов соединений.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -11,8 +10,7 @@ import asyncpgsa
 
 @dataclass
 class ConnectParams:
-    """
-        Основные параметры соединения.
+    """ Основные параметры соединения.
     """
     host: str
     port: str
@@ -20,8 +18,7 @@ class ConnectParams:
 
 @dataclass
 class AsyncPGConnectParams(ConnectParams):
-    """
-        Дополнительные параметры для соединения с асинхронным Postgres.
+    """ Дополнительные параметры для соединения с асинхронным Postgres.
     """
     db: str
     user: str
@@ -53,7 +50,10 @@ class AsyncPGConnect(Connect):
 
     async def create(self,
                      params: AsyncPGConnectParams = None) -> asyncpg.pool.Pool:
+        """ Создает и возвращает новый пулл подключений к Постгресу.
 
+            Созданный пул добавляется в список пулов экземпляра.
+        """
         if isinstance(params, dict):
             params = AsyncPGConnectParams(**params)
 
