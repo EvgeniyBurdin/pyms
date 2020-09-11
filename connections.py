@@ -3,9 +3,10 @@
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Any
 
-import asyncpgsa
 import asyncpg
+import asyncpgsa
 
 
 @dataclass
@@ -36,14 +37,22 @@ class Connect(ABC):
         self.params = params
 
     @abstractmethod
-    def init(self):
+    def create(self) -> Any:
+        pass
+
+    @abstractmethod
+    def close(self):
         pass
 
 
 class AsyncPGConnect(Connect):
 
-    async def init(self,
-                   params: AsyncPGConnectParams = None) -> asyncpg.pool.Pool:
+    def __init__(self, params: AsyncPGConnectParams):
+        super().__init__(params)
+        self.pools = []
+
+    async def create(self,
+                     params: AsyncPGConnectParams = None) -> asyncpg.pool.Pool:
 
         if isinstance(params, dict):
             params = AsyncPGConnectParams(**params)
@@ -51,7 +60,7 @@ class AsyncPGConnect(Connect):
         if params is None:
             params = self.params
 
-        self.connect = await asyncpgsa.create_pool(
+        pool = await asyncpgsa.create_pool(
             host=params.host,
             port=params.port,
             database=params.db,
@@ -60,26 +69,11 @@ class AsyncPGConnect(Connect):
             min_size=params.min_size,
             max_size=params.max_size
         )
+        self.pools.append(pool)
 
+        return pool
 
-if __name__ == "__main__":
+    async def close(self):
 
-    import settings
-    import asyncio
-
-    async def main():
-
-        params = AsyncPGConnectParams(
-            settings.POSTGRES_HOST,
-            settings.POSTGRES_PORT,
-            settings.POSTGRES_DB,
-            settings.POSTGRES_USER,
-            settings.POSTGRES_PASSWORD
-        )
-
-        storage = AsyncPGConnect(params)
-        print(params)
-        await storage.init()
-        print(storage.connect)
-
-    asyncio.run(main())
+        for pool in self.pools:
+            await pool.close()
