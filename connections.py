@@ -44,14 +44,14 @@ class AsyncConnection(ABC):
         await self.close()
 
     @abstractmethod
-    def create(self) -> Any:
+    async def create(self) -> Any:
         """ Метод должен создать подключение, установить его свойству
             self.current_connection и вернуть его.
         """
         pass
 
     @abstractmethod
-    def close(self):
+    async def close(self):
         """ Метод должен закрыть текущее подключение.
             (если есть несколько подключений, то закрыть и их)
         """
@@ -90,7 +90,6 @@ class AsyncPGConnection(AsyncConnection):
 
             Созданный пул добавляется в список пулов экземпляра.
         """
-
         if params is None:
             params = self.params
 
@@ -115,4 +114,4 @@ class AsyncPGConnection(AsyncConnection):
             pool = self.pools.pop()
             await pool.close()
 
-        super().close()
+        await super().close()
