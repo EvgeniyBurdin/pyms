@@ -4,7 +4,7 @@ from connections import AsyncPGConnection, AsyncPGConnectionParams
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 
-# Коннект к PostgreSQL -------------------------------------------------------
+# Подключение к PostgreSQL ---------------------------------------------------
 
 pg_connection_params = AsyncPGConnectionParams(
     POSTGRES_HOST,

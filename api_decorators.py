@@ -25,8 +25,6 @@ def api_method(func):
         Пример:
             @api_method
             async def drop(params: TableDropRequestDC) -> ChangeResponseDC:
-
-
     """
     input_annotation = func.__annotations__['params']
 
