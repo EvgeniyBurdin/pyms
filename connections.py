@@ -8,23 +8,14 @@ import asyncpg
 import asyncpgsa
 
 
+# ----------------------------------------------------------------------------
+
 @dataclass
 class ConnectParams:
     """ Основные параметры соединения.
     """
     host: str
     port: str
-
-
-@dataclass
-class AsyncPGConnectParams(ConnectParams):
-    """ Дополнительные параметры для соединения с асинхронным Postgres.
-    """
-    db: str
-    user: str
-    password: str
-    min_size: int = 5
-    max_size: int = 10
 
 
 class Connect(ABC):
@@ -40,6 +31,19 @@ class Connect(ABC):
     @abstractmethod
     def close(self):
         pass
+
+
+# ----------------------------------------------------------------------------
+
+@dataclass
+class AsyncPGConnectParams(ConnectParams):
+    """ Дополнительные параметры для соединения с асинхронным Postgres.
+    """
+    db: str
+    user: str
+    password: str
+    min_size: int = 5
+    max_size: int = 10
 
 
 class AsyncPGConnect(Connect):
