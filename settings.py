@@ -41,10 +41,10 @@ def get_postgres_connection_url() -> str:
     user = POSTGRES_USER
     password = POSTGRES_PASSWORD
 
-    if not all([user, password, host, db, port]):
+    if not all([db, host, port, user, password]):
         raise DatabaseSettingsError(
             "Not all database connection settings are specified: "
-            f"{[user, password, host, db, port]}."
+            f"{[db, host, port, user, password]}."
         )
 
     return f"postgresql://{user}:{password}@{host}:{port}/{db}"
