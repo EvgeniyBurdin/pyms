@@ -16,7 +16,7 @@ async def simple(params: SimpleParams) -> SimpleResult:
     query = people_table.select().where(people_table.c.name == 'Ivan')
 
     async with connection.acquire() as conn:
-        row = await conn.fetchrow(query)
+        row = await conn.fetch(query)
 
     message = str(row)
 
