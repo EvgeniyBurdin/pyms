@@ -24,7 +24,7 @@ class AsyncPostgresStorage(Storage):
     async def connect(self):
 
         if self.connection is not None:
-            await self.connection.create()
+            self._connection = await self.connection.create()
 
     async def close(self):
 
@@ -40,5 +40,6 @@ class AsyncPostgresStorage(Storage):
 
         await self.close()
 
-    async def fetch(self):
-        print('fetch()')
+    def get_connection(self):
+
+        return self._connection
