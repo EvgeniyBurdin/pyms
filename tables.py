@@ -1,6 +1,5 @@
 """ Схема базы данных.
 """
-
 from sqlalchemy import Column, MetaData, String, Table, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
