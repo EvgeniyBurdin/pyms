@@ -11,16 +11,16 @@ import asyncpgsa
 # ----------------------------------------------------------------------------
 
 @dataclass
-class ConnectParams:
+class ConnectionParams:
     """ Основные параметры соединения.
     """
     host: str
     port: str
 
 
-class Connect(ABC):
+class Connection(ABC):
 
-    def __init__(self, params: ConnectParams):
+    def __init__(self, params: ConnectionParams):
 
         self.params = params
 
@@ -36,7 +36,7 @@ class Connect(ABC):
 # ----------------------------------------------------------------------------
 
 @dataclass
-class AsyncPGConnectParams(ConnectParams):
+class AsyncPGConnectionParams(ConnectionParams):
     """ Дополнительные параметры для соединения с асинхронным Postgres.
     """
     db: str
@@ -46,20 +46,20 @@ class AsyncPGConnectParams(ConnectParams):
     max_size: int = 10
 
 
-class AsyncPGConnect(Connect):
+class AsyncPGConnection(Connection):
 
-    def __init__(self, params: AsyncPGConnectParams):
+    def __init__(self, params: AsyncPGConnectionParams):
         super().__init__(params)
         self.pools = []
 
-    async def create(self,
-                     params: AsyncPGConnectParams = None) -> asyncpg.pool.Pool:
+    async def create(self, params: AsyncPGConnectionParams = None
+                     ) -> asyncpg.pool.Pool:
         """ Создает и возвращает новый пулл подключений к Постгресу.
 
             Созданный пул добавляется в список пулов экземпляра.
         """
         if isinstance(params, dict):
-            params = AsyncPGConnectParams(**params)
+            params = AsyncPGConnectionParams(**params)
 
         if params is None:
             params = self.params

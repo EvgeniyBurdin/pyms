@@ -1,14 +1,18 @@
 from abc import ABC, abstractmethod
-from connections import Connect
+from connections import Connection
 
 
 class Storage(ABC):
 
-    connect = None
+    connection = None
 
-    def __init__(self, connect: Connect):
+    def __init__(self, connection: Connection):
 
-        self.connect = connect
+        self.connection = connection
+
+    @abstractmethod
+    def connect(self):
+        pass
 
     @abstractmethod
     def close(self):
@@ -17,8 +21,24 @@ class Storage(ABC):
 
 class AsyncPostgresStorage(Storage):
 
+    async def connect(self):
+
+        if self.connection is not None:
+            await self.connection.create()
+
     async def close(self):
 
-        if self.connect is not None:
-            await self.connect.close()
-            self.connect = None
+        if self.connection is not None:
+            await self.connection.close()
+            self.connection = None
+
+    async def setup(self, _=None):
+
+        await self.connect()
+
+        yield
+
+        await self.close()
+
+    async def fetch(self):
+        print('fetch()')
