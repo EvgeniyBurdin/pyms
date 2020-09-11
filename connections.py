@@ -21,7 +21,6 @@ class ConnectionParams:
 class AsyncConnection(ABC):
     """ Класс асинхронного подключения.
     """
-
     def __init__(self, params: ConnectionParams):
 
         self.params = params
@@ -72,8 +71,13 @@ class AsyncPGConnectionParams(ConnectionParams):
 
 
 class AsyncPGConnection(AsyncConnection):
+    """ Асинхронное подключение к Постгресу.
 
+        Текущая реализация под "подключением" подразумевает "Пулл подключений"
+        из библиотеки asyncpg.
+    """
     def __init__(self, params: AsyncPGConnectionParams):
+
         super().__init__(params)
 
         # Храним все созданные пулы подключений
