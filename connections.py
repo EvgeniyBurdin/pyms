@@ -6,6 +6,7 @@ from typing import Any
 
 import asyncpg
 import asyncpgsa
+from settings import DatabaseSettingsError
 
 
 # ----------------------------------------------------------------------------
@@ -107,8 +108,12 @@ class AsyncPGConnection(AsyncConnection):
         if isinstance(params, AsyncPGConnectionParams):
             params = asdict(params)
 
-        database = params.pop('db')
-        params['database'] = database
+        try:
+            database = params.pop('db')
+            params['database'] = database
+
+        except Exception:
+            raise DatabaseSettingsError(f"Incorrect DB settings: {params}.")
 
         pool = await asyncpgsa.create_pool(**params)
 
