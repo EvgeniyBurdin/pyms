@@ -31,7 +31,7 @@ class AsyncConnection(ABC):
         """
         return self.current_connection or await self.create()
 
-    async def setup(self, _=None) -> None:
+    async def setup(self, _) -> None:
         """ Метод создает подключение а при повторном вызове - закрывает его.
 
             (используется для добавления в список
@@ -43,26 +43,38 @@ class AsyncConnection(ABC):
 
         await self.close()
 
+    async def create(self, params: ConnectionParams = None) -> Any:
+        """ Метод создает подключение и возвращает его.
+        """
+        self.current_connection = await self._create(params or self.params)
+
+        return self.current_connection
+
+    async def close(self) -> None:
+        """ Метод закрываект подключение.
+        """
+        await self._close()
+        self.current_connection = None
+
     @abstractmethod
-    async def create(self) -> Any:
-        """ Метод должен создать подключение, присвоить его свойству
-            self.current_connection, и вернуть его.
+    async def _create(self, params: ConnectionParams) -> Any:
+        """ Метод должен создать подключение и вернуть его.
         """
         pass
 
     @abstractmethod
-    async def close(self) -> None:
+    async def _close(self) -> None:
         """ Метод должен закрыть текущее подключение.
             (если есть несколько подключений, то закрыть и их)
         """
-        self.current_connection = None
+        pass
 
 
 # ----------------------------------------------------------------------------
 
 @dataclass
 class AsyncPGConnectionParams(ConnectionParams):
-    """ Дополнительные параметры для соединения с асинхронным Postgres.
+    """ Дополнительные параметры для асинхронного подключения к Postgres.
     """
     db: str
     user: str
@@ -72,7 +84,7 @@ class AsyncPGConnectionParams(ConnectionParams):
 
 
 class AsyncPGConnection(AsyncConnection):
-    """ Асинхронное подключение к Постгресу.
+    """ Асинхронное подключение к Postgres.
 
         Текущая реализация под "подключением" подразумевает "Пулл подключений"
         из библиотеки asyncpg.
@@ -81,17 +93,16 @@ class AsyncPGConnection(AsyncConnection):
 
         super().__init__(params)
 
-        # Храним все созданные пулы подключений
+        # Храним все созданные пуллы подключений, чтобы потом корректно
+        # закрыть их.
         self.pools = []
 
-    async def create(self, params: AsyncPGConnectionParams = None
-                     ) -> asyncpg.pool.Pool:
-        """ Создает и возвращает новый пулл подключений к Постгресу.
+    async def _create(self, params: AsyncPGConnectionParams = None
+                      ) -> asyncpg.pool.Pool:
+        """ Создает и возвращает новый пулл подключений к Postgres.
 
-            Созданный пул добавляется в список пулов экземпляра.
+            Созданный пулл добавляется в список пуллов экземпляра.
         """
-        if params is None:
-            params = self.params
 
         if isinstance(params, AsyncPGConnectionParams):
             params = asdict(params)
@@ -103,15 +114,11 @@ class AsyncPGConnection(AsyncConnection):
 
         self.pools.append(pool)
 
-        self.current_connection = pool
-
         return pool
 
-    async def close(self) -> None:
-        """ Закрывает все пулы подключений экземпляра.
+    async def _close(self) -> None:
+        """ Закрывает все пуллы подключений экземпляра.
         """
         while self.pools:
             pool = self.pools.pop()
             await pool.close()
-
-        await super().close()
