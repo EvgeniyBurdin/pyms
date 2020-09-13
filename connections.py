@@ -6,6 +6,7 @@ from typing import Any
 
 import asyncpg
 import asyncpgsa
+
 from settings import DatabaseSettingsError
 
 
@@ -87,22 +88,22 @@ class AsyncPGConnectionParams(ConnectionParams):
 class AsyncPGConnection(AsyncConnection):
     """ Асинхронное подключение к Postgres.
 
-        Текущая реализация под "подключением" подразумевает "Пулл подключений"
+        Текущая реализация под "подключением" подразумевает "Пул подключений"
         из библиотеки asyncpg.
     """
     def __init__(self, params: AsyncPGConnectionParams):
 
         super().__init__(params)
 
-        # Храним все созданные пуллы подключений, чтобы потом корректно
+        # Храним все созданные пулы подключений, чтобы потом корректно
         # закрыть их.
         self.pools = []
 
     async def _create(self, params: AsyncPGConnectionParams = None
                       ) -> asyncpg.pool.Pool:
-        """ Создает и возвращает новый пулл подключений к Postgres.
+        """ Создает и возвращает новый пул подключений к Postgres.
 
-            Созданный пулл добавляется в список пуллов экземпляра.
+            Созданный пул добавляется в список пулов экземпляра.
         """
 
         if isinstance(params, AsyncPGConnectionParams):
@@ -122,7 +123,7 @@ class AsyncPGConnection(AsyncConnection):
         return pool
 
     async def _close(self) -> None:
-        """ Закрывает все пуллы подключений экземпляра.
+        """ Закрывает все пулы подключений экземпляра.
         """
         while self.pools:
             pool = self.pools.pop()
