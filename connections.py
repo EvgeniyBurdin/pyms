@@ -20,18 +20,21 @@ class ConnectionParams:
     port: str
 
 
-class AsyncConnection(ABC):
-    """ Класс асинхронного подключения.
-    """
+class Connection:
+
     def __init__(self, params: ConnectionParams):
 
         self.params = params
-        self.current_connection = None
+        self.current = None
 
+
+class AsyncConnection(Connection, ABC):
+    """ Класс асинхронного подключения.
+    """
     async def get(self) -> Any:
         """ Возвращает текущее подключение.
         """
-        return self.current_connection or await self.create()
+        return self.current or await self.create()
 
     async def setup(self, _) -> None:
         """ Метод создает подключение а при повторном вызове - закрывает его.
@@ -48,15 +51,15 @@ class AsyncConnection(ABC):
     async def create(self, params: ConnectionParams = None) -> Any:
         """ Метод создает подключение и возвращает его.
         """
-        self.current_connection = await self._create(params or self.params)
+        self.current = await self._create(params or self.params)
 
-        return self.current_connection
+        return self.current
 
     async def close(self) -> None:
         """ Метод закрываект подключение.
         """
         await self._close()
-        self.current_connection = None
+        self.current = None
 
     @abstractmethod
     async def _create(self, params: ConnectionParams) -> Any:
