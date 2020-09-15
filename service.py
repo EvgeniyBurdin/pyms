@@ -1,6 +1,7 @@
 """ Модуль настройки используемых сервером сущностей.
 """
 from connections import AsyncPGConnection, AsyncPGConnectionParams
+from storages import AsyncSaPostgresCRUDStorage
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 
@@ -15,3 +16,5 @@ pg_connection_params = AsyncPGConnectionParams(
 )
 
 pg_connection = AsyncPGConnection(pg_connection_params)
+
+pg_storage = AsyncSaPostgresCRUDStorage(pg_connection)

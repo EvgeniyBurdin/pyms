@@ -3,7 +3,7 @@
 from api_decorators import api_method
 from data_classes.requests import SimpleParams
 from data_classes.responses import SimpleResult
-from service import pg_connection
+from service import pg_storage
 from tables import people as people_table
 
 
@@ -17,15 +17,7 @@ async def simple(params: SimpleParams) -> SimpleResult:
 
     # Пример работы с БД
 
-    # Получим коннект
-    connection = await pg_connection.get()
-
-    # Подготовим core-sqlalchemy запрос
-    core_sa_query = people_table.select().where(people_table.c.name == 'Ivan')
-
-    # Выполним запрос
-    async with connection.acquire() as conn:
-        row = await conn.fetch(core_sa_query)
+    row = await pg_storage.read(people_table)
 
     # Просто вернем из метода строку с результатом запроса к БД
     message = str(row)

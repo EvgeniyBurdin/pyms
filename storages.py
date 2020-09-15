@@ -1,18 +1,17 @@
 """ Модуль для классов хранилищ данных
 """
 from abc import ABC, abstractmethod
+from connections import Connection
 
 
-class Storage(ABC):
+class Storage:
 
-    def __init__(self, connection_class=None, connection_params=None):
+    def __init__(self, connection: Connection):
 
-        self.connection_class = connection_class
-        self.connection_params = connection_params
-        print(self.connection_class)
+        self.connection = connection
 
 
-class AsyncStorage(Storage, ABC):
+class AsyncStorage(Storage):
 
     async def setup(self, _) -> None:
         """ Метод открывает хранилище для работы, а при повторном
@@ -29,23 +28,11 @@ class AsyncStorage(Storage, ABC):
 
     async def open(self):
 
-        result = await self._open(query)
-
-        return result
+        await self.connection.create()
 
     async def close(self):
 
-        result = await self._close(query)
-
-        return result
-
-    @abstractmethod
-    async def _open(self):
-        pass
-
-    @abstractmethod
-    async def _close(self):
-        pass
+        await self.connection.close()
 
 
 class AsyncCRUDStorage(AsyncStorage, ABC):
@@ -91,13 +78,19 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
         pass
 
 
-class AsyncPostgresCRUDStorage(AsyncCRUDStorage):
+class AsyncSaPostgresCRUDStorage(AsyncCRUDStorage):
 
     async def _create(self, query):
         pass
 
     async def _read(self, query):
-        pass
+
+        connection = await self.connection.get()
+
+        async with connection.acquire() as conn:
+            row = await conn.fetch(query.select())
+
+        return row
 
     async def _update(self, query):
         pass
