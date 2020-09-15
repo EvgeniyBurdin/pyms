@@ -14,12 +14,37 @@ class Storage(ABC):
 
 class AsyncStorage(Storage, ABC):
 
-    @abstractmethod
+    async def setup(self, _) -> None:
+        """ Метод открывает хранилище для работы, а при повторном
+            вызове - закрывает его.
+
+            (используется для добавления в список
+             aiohttp.web.Application.cleanup_ctx при старте приложения)
+        """
+        await self.open()
+
+        yield
+
+        await self.close()
+
     async def open(self):
+
+        result = await self._open(query)
+
+        return result
+
+    async def close(self):
+
+        result = await self._close(query)
+
+        return result
+
+    @abstractmethod
+    async def _open(self):
         pass
 
     @abstractmethod
-    async def close(self):
+    async def _close(self):
         pass
 
 
@@ -48,12 +73,6 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
         result = await self._delete(query)
 
         return result
-
-    async def open(self):
-        pass
-
-    async def close(self):
-        pass
 
     @abstractmethod
     async def _create(self, query):
