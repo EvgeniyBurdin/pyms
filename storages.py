@@ -5,12 +5,25 @@ from abc import ABC, abstractmethod
 
 class Storage(ABC):
 
-    def __init__(self, connection):
+    def __init__(self, connection_class=None, connection_params=None):
 
-        self.connection = connection
+        self.connection_class = connection_class
+        self.connection_params = connection_params
+        print(self.connection_class)
 
 
-class AsyncCRUDStorage(Storage, ABC):
+class AsyncStorage(Storage, ABC):
+
+    @abstractmethod
+    async def open(self):
+        pass
+
+    @abstractmethod
+    async def close(self):
+        pass
+
+
+class AsyncCRUDStorage(AsyncStorage, ABC):
 
     async def create(self, query):
 
@@ -36,6 +49,12 @@ class AsyncCRUDStorage(Storage, ABC):
 
         return result
 
+    async def open(self):
+        pass
+
+    async def close(self):
+        pass
+
     @abstractmethod
     async def _create(self, query):
         pass
@@ -49,5 +68,20 @@ class AsyncCRUDStorage(Storage, ABC):
         pass
 
     @abstractmethod
+    async def _delete(self, query):
+        pass
+
+
+class AsyncPostgresCRUDStorage(AsyncCRUDStorage):
+
+    async def _create(self, query):
+        pass
+
+    async def _read(self, query):
+        pass
+
+    async def _update(self, query):
+        pass
+
     async def _delete(self, query):
         pass
