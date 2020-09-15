@@ -15,6 +15,6 @@ pg_connection_params = AsyncPGConnectionParams(
     POSTGRES_PASSWORD
 )
 
-pg_connection = AsyncPGConnection(pg_connection_params)
-
-pg_storage = AsyncSaPostgresCRUDStorage(pg_connection)
+pg_storage = AsyncSaPostgresCRUDStorage(
+    connection=AsyncPGConnection(pg_connection_params)
+)
