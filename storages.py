@@ -83,7 +83,7 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
         pass
 
 
-class AsyncPostgresSACoreCRUDStorage(AsyncCRUDStorage):
+class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи SQLAlchemy-core.
     """

@@ -3,7 +3,7 @@
 from api_decorators import api_method
 from data_classes.requests import SimpleParams
 from data_classes.responses import SimpleResult
-from service import pg_storage as storage
+from service import storage
 from tables import people as people_table
 
 
