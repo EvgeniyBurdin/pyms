@@ -5,38 +5,43 @@ from connections import Connection
 
 
 class Storage:
-
+    """ Базовый класс хранилища данных
+    """
     def __init__(self, connection: Connection):
 
         self.connection = connection
 
 
 class AsyncStorage(Storage):
-
+    """ Базовый класс асинхронного хранилища данных
+    """
     async def setup(self, _) -> None:
-        """ Метод открывает хранилище для работы, а при повторном
+        """ Метод подключает хранилище для работы, а при повторном
             вызове - закрывает его.
 
-            (используется для добавления в список
-             aiohttp.web.Application.cleanup_ctx при старте приложения)
+            Добавляется в список aiohttp.web.Application.cleanup_ctx при
+            старте приложения.
         """
-        await self.init()
+        await self.connect()
 
         yield
 
-        await self.close()
+        await self.disconnect()
 
-    async def init(self):
-
+    async def connect(self) -> None:
+        """  Подключает хранилище
+        """
         await self.connection.create()
 
-    async def close(self):
-
+    async def disconnect(self) -> None:
+        """ Закрывает подключение к хранилищу
+        """
         await self.connection.close()
 
 
 class AsyncCRUDStorage(AsyncStorage, ABC):
-
+    """ Базовый класс асинхронного хранилища данных с методами CRUD
+    """
     async def create(self, query):
 
         result = await self._create(query)
@@ -78,8 +83,10 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
         pass
 
 
-class AsyncSaPostgresCRUDStorage(AsyncCRUDStorage):
-
+class AsyncPostgresSACoreCRUDStorage(AsyncCRUDStorage):
+    """ Класс асинхронного хранилища данных Postgres с доступом при
+        помощи SQLAlchemy-core.
+    """
     async def _create(self, query):
         pass
 

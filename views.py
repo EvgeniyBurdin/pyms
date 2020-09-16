@@ -3,7 +3,7 @@
 from api_decorators import api_method
 from data_classes.requests import SimpleParams
 from data_classes.responses import SimpleResult
-from service import pg_storage
+from service import pg_storage as storage
 from tables import people as people_table
 
 
@@ -17,7 +17,7 @@ async def simple(params: SimpleParams) -> SimpleResult:
 
     # Пример работы с БД
 
-    row = await pg_storage.read(people_table)
+    row = await storage.read(people_table)
 
     # Просто вернем из метода строку с результатом запроса к БД
     message = str(row)
