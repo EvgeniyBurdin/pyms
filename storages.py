@@ -20,13 +20,13 @@ class AsyncStorage(Storage):
             (используется для добавления в список
              aiohttp.web.Application.cleanup_ctx при старте приложения)
         """
-        await self.open()
+        await self.init()
 
         yield
 
         await self.close()
 
-    async def open(self):
+    async def init(self):
 
         await self.connection.create()
 

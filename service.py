@@ -5,14 +5,14 @@ from storages import AsyncSaPostgresCRUDStorage
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 
-# Подключение к PostgreSQL ---------------------------------------------------
+# Хранилище на PostgreSQL ----------------------------------------------------
 
 pg_connection_params = AsyncPGConnectionParams(
-    POSTGRES_HOST,
-    POSTGRES_PORT,
-    POSTGRES_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD
+    host=POSTGRES_HOST,
+    port=POSTGRES_PORT,
+    db=POSTGRES_DB,
+    user=POSTGRES_USER,
+    password=POSTGRES_PASSWORD
 )
 
 pg_storage = AsyncSaPostgresCRUDStorage(
