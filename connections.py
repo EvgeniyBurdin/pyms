@@ -1,5 +1,6 @@
 """ Модуль для классов подключений.
 """
+import json
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 import asyncpg
 import asyncpgsa
 
+from api_json_enc_dec import json_dumps
 from settings import DatabaseSettingsError
 
 
@@ -78,7 +80,7 @@ class AsyncConnection(Connection, ABC):
 # ----------------------------------------------------------------------------
 
 @dataclass
-class AsyncPGConnectionParams(ConnectionParams):
+class AsyncpgsaConnectionParams(ConnectionParams):
     """ Дополнительные параметры для асинхронного подключения к Postgres.
     """
     db: str
@@ -88,13 +90,10 @@ class AsyncPGConnectionParams(ConnectionParams):
     max_size: int = 10
 
 
-class AsyncPGConnection(AsyncConnection):
-    """ Асинхронное подключение к Postgres.
-
-        Текущая реализация под "подключением" подразумевает "Пул подключений"
-        из библиотеки asyncpg.
+class AsyncpgsaConnection(AsyncConnection):
+    """ Асинхронное подключение к Postgres c помощью библиотеки asyncpgsa.
     """
-    def __init__(self, params: AsyncPGConnectionParams):
+    def __init__(self, params: AsyncpgsaConnectionParams):
 
         super().__init__(params)
 
@@ -102,22 +101,31 @@ class AsyncPGConnection(AsyncConnection):
         # закрыть их.
         self.pools = []
 
-    async def _create(self, params: AsyncPGConnectionParams = None
+    async def connection_init(self, connection):
+        """ Устанавливает параметры для подключения.
+        """
+        await connection.set_type_codec(
+            'jsonb',
+            encoder=json_dumps, decoder=json.loads, schema='pg_catalog',
+        )
+
+    async def _create(self, params: AsyncpgsaConnectionParams = None
                       ) -> asyncpg.pool.Pool:
         """ Создает и возвращает новый пул подключений к Postgres.
 
             Созданный пул добавляется в список пулов экземпляра.
         """
-
-        if isinstance(params, AsyncPGConnectionParams):
+        if isinstance(params, AsyncpgsaConnectionParams):
             params = asdict(params)
 
         try:
             database = params.pop('db')
-            params['database'] = database
 
         except Exception:
             raise DatabaseSettingsError(f"Incorrect DB settings: {params}.")
+
+        params['database'] = database
+        params['init'] = self.connection_init
 
         pool = await asyncpgsa.create_pool(**params)
 

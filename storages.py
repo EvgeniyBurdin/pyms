@@ -1,8 +1,6 @@
 """ Модуль для классов хранилищ данных
 """
-import json
 from abc import ABC, abstractmethod
-from api_json_enc_dec import json_dumps
 
 from connections import Connection
 
@@ -98,17 +96,12 @@ class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
         connection = await self.connection.get()
 
         async with connection.acquire() as conn:
-            await conn.set_type_codec(
-                'jsonb',
-                encoder=json_dumps, decoder=json.loads, schema='pg_catalog',
-            )
             rows = await conn.fetch(table.select())
 
         result = []
         for row in rows:
             item = {}
             for key, value in row.items():
-                print(value, type(value))
                 item[key] = value
 
             result.append(item)
