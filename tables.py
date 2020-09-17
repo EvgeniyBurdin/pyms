@@ -1,6 +1,6 @@
 """ Схема базы данных.
 """
-from sqlalchemy import Column, MetaData, String, Table, func
+from sqlalchemy import Column, DateTime, MetaData, String, Table, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 metadata = MetaData()
@@ -18,5 +18,13 @@ people = Table(
     ),
     Column(
         "extra", JSONB
+    ),
+    Column(
+        "created", DateTime(timezone=True), nullable=False,
+        server_default=func.now()
+    ),
+    Column(
+        "updated", DateTime(timezone=True), nullable=True,
+        onupdate=func.now()
     ),
 )
