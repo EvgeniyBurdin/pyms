@@ -87,7 +87,7 @@ class AsyncpgConnectionParams(ConnectionParams):
     user: str
     password: str
     min_size: int = 5
-    max_size: int = 10
+    max_size: int = 1000
 
 
 class AsyncpgConnection(AsyncConnection):
