@@ -1,8 +1,8 @@
 """ Модуль для классов хранилищ данных
 """
 from abc import ABC, abstractmethod
+
 from connections import Connection
-from uuid import UUID
 
 
 class Storage:

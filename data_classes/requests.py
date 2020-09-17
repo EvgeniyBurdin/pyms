@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 from data_classes.base import ApiDC
-from typing import Any
 
 
 @dataclass
