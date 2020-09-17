@@ -2,7 +2,7 @@
 """
 import json
 from abc import ABC, abstractmethod
-from middlewares import json_dumps
+from api_json_enc_dec import json_dumps
 
 from connections import Connection
 
