@@ -24,6 +24,6 @@ async def read(params: ReadParams) -> ReadResult:
     """
     table = get_table(params.name)
 
-    result = await storage.read(table, params.query)
+    rows = await storage.read(table, params.query)
 
-    return ReadResult(str(result))
+    return ReadResult(name=params.name, length=len(rows), rows=rows)

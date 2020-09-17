@@ -23,7 +23,9 @@ class ErrorResult(ApiDC):
 class ReadResult(ApiDC):
     """ Результат чтения.
     """
-    hits: str
+    name: str
+    length: int
+    rows: list
 
 
 @dataclass

@@ -2,6 +2,7 @@
 """
 from abc import ABC, abstractmethod
 from connections import Connection
+from uuid import UUID
 
 
 class Storage:
@@ -95,9 +96,17 @@ class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
         connection = await self.connection.get()
 
         async with connection.acquire() as conn:
-            row = await conn.fetch(table.select())
+            rows = await conn.fetch(table.select())
 
-        return row
+        result = []
+        for row in rows:
+            item = {}
+            for key, value in row.items():
+                item[key] = value
+
+            result.append(item)
+
+        return result
 
     async def _update(self, query):
         pass
