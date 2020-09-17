@@ -98,15 +98,7 @@ class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
         async with connection.acquire() as conn:
             rows = await conn.fetch(table.select())
 
-        result = []
-        for row in rows:
-            item = {}
-            for key, value in row.items():
-                item[key] = value
-
-            result.append(item)
-
-        return result
+        return [{key: value for key, value in row.items()} for row in rows]
 
     async def _update(self, query):
         pass
