@@ -80,7 +80,7 @@ class AsyncConnection(Connection, ABC):
 # ----------------------------------------------------------------------------
 
 @dataclass
-class AsyncpgsaConnectionParams(ConnectionParams):
+class AsyncpgConnectionParams(ConnectionParams):
     """ Дополнительные параметры для асинхронного подключения к Postgres.
     """
     db: str
@@ -90,10 +90,10 @@ class AsyncpgsaConnectionParams(ConnectionParams):
     max_size: int = 10
 
 
-class AsyncpgsaConnection(AsyncConnection):
-    """ Асинхронное подключение к Postgres c помощью библиотеки asyncpgsa.
+class AsyncpgConnection(AsyncConnection):
+    """ Асинхронное подключение к Postgres c помощью библиотеки asyncpg.
     """
-    def __init__(self, params: AsyncpgsaConnectionParams):
+    def __init__(self, params: AsyncpgConnectionParams):
 
         super().__init__(params)
 
@@ -101,7 +101,7 @@ class AsyncpgsaConnection(AsyncConnection):
         # закрыть их.
         self.pools = []
 
-    async def connection_init(self, connection):
+    async def connection_init(self, connection) -> None:
         """ Устанавливает параметры для подключения.
         """
         await connection.set_type_codec(
@@ -109,13 +109,18 @@ class AsyncpgsaConnection(AsyncConnection):
             encoder=json_dumps, decoder=json.loads, schema='pg_catalog',
         )
 
-    async def _create(self, params: AsyncpgsaConnectionParams = None
+    async def _get_pool(self, **params) -> asyncpg.pool.Pool:
+        """ Возвращает пул подключений.
+        """
+        return await asyncpg.create_pool(**params)
+
+    async def _create(self, params: AsyncpgConnectionParams = None
                       ) -> asyncpg.pool.Pool:
         """ Создает и возвращает новый пул подключений к Postgres.
 
             Созданный пул добавляется в список пулов экземпляра.
         """
-        if isinstance(params, AsyncpgsaConnectionParams):
+        if isinstance(params, AsyncpgConnectionParams):
             params = asdict(params)
 
         try:
@@ -127,7 +132,7 @@ class AsyncpgsaConnection(AsyncConnection):
         params['database'] = database
         params['init'] = self.connection_init
 
-        pool = await asyncpgsa.create_pool(**params)
+        pool = await self._get_pool(**params)
 
         self.pools.append(pool)
 
@@ -139,3 +144,12 @@ class AsyncpgsaConnection(AsyncConnection):
         while self.pools:
             pool = self.pools.pop()
             await pool.close()
+
+
+class AsyncpgsaConnection(AsyncpgConnection):
+    """ Асинхронное подключение к Postgres c помощью библиотеки asyncpgsa.
+    """
+    async def _get_pool(self, **params) -> asyncpg.pool.Pool:
+        """ Возвращает пул подключений.
+        """
+        return await asyncpgsa.create_pool(**params)
