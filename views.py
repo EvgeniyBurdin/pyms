@@ -1,25 +1,29 @@
 """ Обработчики запросов.
 """
 from api_decorators import api_method
-from data_classes.requests import SimpleParams
-from data_classes.responses import SimpleResult
+from data_classes.requests import ReadParams
+from data_classes.responses import ReadResult
 from service import storage
 from tables import people as people_table
+from sqlalchemy import Table
+
+
+TABLES = (people_table, )
+
+
+def get_table(name: str) -> Table:
+
+    for table in TABLES:
+        if table.name == name:
+            return table
 
 
 @api_method
-async def simple(params: SimpleParams) -> SimpleResult:
-    """ Простой апи-метод (для примера).
+async def read(params: ReadParams) -> ReadResult:
+    """ Чтение из хранилища.
     """
-    query = params.query
-    # Просто напечатаем запрос
-    print('Request received:', query)
+    table = get_table(params.name)
 
-    # Пример работы с БД
+    result = await storage.read(table, params.query)
 
-    row = await storage.read(people_table)
-
-    # Просто вернем из метода строку с результатом запроса к БД
-    message = str(row)
-
-    return SimpleResult(message=message)
+    return ReadResult(str(result))

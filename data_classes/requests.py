@@ -3,15 +3,17 @@
 from dataclasses import dataclass
 
 from data_classes.base import ApiDC
+from typing import Any
 
 
 @dataclass
-class SimpleParams(ApiDC):
-    """ Параматры для простого обработчика.
-
-        (для примера)
+class ReadParams(ApiDC):
+    """ Параметры для чтения из хранилища.
     """
-    query: str = "How are you?"
+    name: str
+    query: dict
+    limit: int = 1000
+    offset: int = 0
 
 
 @dataclass

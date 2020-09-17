@@ -48,9 +48,9 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
 
         return result
 
-    async def read(self, query):
+    async def read(self, table, query):
 
-        result = await self._read(query)
+        result = await self._read(table, query)
 
         return result
 
@@ -90,12 +90,12 @@ class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
     async def _create(self, query):
         pass
 
-    async def _read(self, query):
+    async def _read(self, table, query):
 
         connection = await self.connection.get()
 
         async with connection.acquire() as conn:
-            row = await conn.fetch(query.select())
+            row = await conn.fetch(table.select())
 
         return row
 

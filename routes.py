@@ -1,7 +1,7 @@
 from aiohttp import web
 
-from views import simple
+from views import read
 
 routes = [
-    web.post("/simple", simple, name='simple'),
+    web.post("/read", read, name='read'),
 ]

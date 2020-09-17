@@ -20,12 +20,10 @@ class ErrorResult(ApiDC):
 
 
 @dataclass
-class SimpleResult(ApiDC):
-    """ Результат от простого обработчика.
-
-        (для примера)
+class ReadResult(ApiDC):
+    """ Результат чтения.
     """
-    message: str
+    hits: str
 
 
 @dataclass
