@@ -1,11 +1,23 @@
 import json
 from dataclasses import asdict
+from uuid import UUID
 
 from aiohttp import web
 
 from api_exeptions import InputValidationError
 from data_classes.requests import RequestDC
 from data_classes.responses import ErrorResult, ResponseDC
+
+
+class ApiJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
+
+
+def json_dumps(obj):
+    return json.dumps(obj, cls=ApiJSONEncoder)
 
 
 @web.middleware
@@ -64,7 +76,8 @@ async def json_server(request, handler):
                 result=ErrorResult(error_type, msg, extra),
                 id=id_
             )),
-            status=400
+            status=400,
+            dumps=json_dumps
         )
 
     # Выполнение запроса -----------------------------------------------------
@@ -84,7 +97,8 @@ async def json_server(request, handler):
                 result=ErrorResult(error_type, msg, extra),
                 id=id_
             )),
-            status=500
+            status=500,
+            dumps=json_dumps
         )
 
-    return web.json_response(response)
+    return web.json_response(data=response, dumps=json_dumps)
