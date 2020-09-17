@@ -109,7 +109,7 @@ class AsyncpgConnection(AsyncConnection):
             encoder=json_dumps, decoder=json.loads, schema='pg_catalog',
         )
 
-    async def _get_pool(self, **params) -> asyncpg.pool.Pool:
+    async def _create_pool(self, **params) -> asyncpg.pool.Pool:
         """ Возвращает пул подключений.
         """
         return await asyncpg.create_pool(**params)
@@ -132,7 +132,7 @@ class AsyncpgConnection(AsyncConnection):
         params['database'] = database
         params['init'] = self.connection_init
 
-        pool = await self._get_pool(**params)
+        pool = await self._create_pool(**params)
 
         self.pools.append(pool)
 
@@ -149,7 +149,7 @@ class AsyncpgConnection(AsyncConnection):
 class AsyncpgsaConnection(AsyncpgConnection):
     """ Асинхронное подключение к Postgres c помощью библиотеки asyncpgsa.
     """
-    async def _get_pool(self, **params) -> asyncpg.pool.Pool:
+    async def _create_pool(self, **params) -> asyncpg.pool.Pool:
         """ Возвращает пул подключений.
         """
         return await asyncpgsa.create_pool(**params)
