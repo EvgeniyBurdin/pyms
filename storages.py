@@ -3,20 +3,17 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict
 
-from sqlalchemy import Table
+from sqlalchemy import Table as SQLATable
 
+import tables as app_tables
 from connections import Connection
-from tables import people
 
-
-TABLES = (people, )
-
-
-def get_table(name: str) -> Table:
-
-    for table in TABLES:
-        if table.name == name:
-            return table
+# Соберем все таблицы в словарь, где ключ - имя таблицы
+TABLES = {
+    getattr(app_tables, attr_name).name:  getattr(app_tables, attr_name)
+    for attr_name in dir(app_tables)
+    if isinstance(getattr(app_tables, attr_name), SQLATable)
+}
 
 
 class Storage:
@@ -105,7 +102,7 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     async def _create(self, query):
         """ Вставка в таблицу. (еще в разработке)
         """
-        table = get_table(query.table_name)
+        table = TABLES[query.table_name]
         query = asdict(query)
         data = query['data']
 
@@ -117,7 +114,7 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     async def _read(self, query):
         """ Чтение из таблицы. (еще в разработке)
         """
-        table = get_table(query.table_name)
+        table = TABLES[query.table_name]
 
         pool = await self.connection.get()
 
