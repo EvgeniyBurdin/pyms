@@ -32,7 +32,8 @@ class ReadResult(ApiDC):
 class CreateResult(ApiDC):
     """ Результат чтения.
     """
-    pass
+    name: str
+    message: str = "ok"
 
 
 @dataclass

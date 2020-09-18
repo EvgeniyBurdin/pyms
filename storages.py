@@ -1,11 +1,13 @@
 """ Модуль для классов хранилищ данных
 """
 from abc import ABC, abstractmethod
+from dataclasses import asdict
 
 from sqlalchemy import Table
 
 from connections import Connection
 from tables import people
+
 
 TABLES = (people, )
 
@@ -101,16 +103,20 @@ class AsyncpgsaStore(AsyncCRUDStorage):
         помощи библиотеки asyncpgsa.
     """
     async def _create(self, query):
-
+        """ Вставка в таблицу. (еще в разработке)
+        """
         table = get_table(query.table_name)
+        query = asdict(query)
+        data = query['data']
 
         pool = await self.connection.get()
 
         async with pool.acquire() as conn:
-            rows = await conn.fetch(table.select())
+            await conn.fetchrow(table.insert().values(data))
 
     async def _read(self, query):
-
+        """ Чтение из таблицы. (еще в разработке)
+        """
         table = get_table(query.table_name)
 
         pool = await self.connection.get()

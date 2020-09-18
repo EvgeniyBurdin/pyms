@@ -12,13 +12,13 @@ async def read(params: ReadParams) -> ReadResult:
     """
     rows = await storage.read(params)
 
-    return ReadResult(name=params.name, length=len(rows), rows=rows)
+    return ReadResult(name=params.table_name, length=len(rows), rows=rows)
 
 
 @api_method
 async def create(params: CreateParams) -> CreateResult:
     """ Запись в хранилище.
     """
-    rows = await storage.read(params)
+    await storage.create(params)
 
-    return ReadResult(name=params.name, length=len(rows), rows=rows)
+    return CreateResult(name=params.table_name)
