@@ -29,6 +29,13 @@ class ReadResult(ApiDC):
 
 
 @dataclass
+class CreateResult(ApiDC):
+    """ Результат чтения.
+    """
+    pass
+
+
+@dataclass
 class ResponseDC(ApiDC):
     """ Ответ от сервиса.
 

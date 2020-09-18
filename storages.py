@@ -2,7 +2,19 @@
 """
 from abc import ABC, abstractmethod
 
+from sqlalchemy import Table
+
 from connections import Connection
+from tables import people
+
+TABLES = (people, )
+
+
+def get_table(name: str) -> Table:
+
+    for table in TABLES:
+        if table.name == name:
+            return table
 
 
 class Storage:
@@ -49,9 +61,9 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
 
         return result
 
-    async def read(self, table, query):
+    async def read(self, query):
 
-        result = await self._read(table, query)
+        result = await self._read(query)
 
         return result
 
@@ -84,18 +96,27 @@ class AsyncCRUDStorage(AsyncStorage, ABC):
         pass
 
 
-class AsyncPostgresSQLAlchemyCore(AsyncCRUDStorage):
+class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
-        помощи SQLAlchemy-core.
+        помощи библиотеки asyncpgsa.
     """
     async def _create(self, query):
-        pass
 
-    async def _read(self, table, query):
+        table = get_table(query.table_name)
 
-        connection = await self.connection.get()
+        pool = await self.connection.get()
 
-        async with connection.acquire() as conn:
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(table.select())
+
+    async def _read(self, query):
+
+        table = get_table(query.table_name)
+
+        pool = await self.connection.get()
+
+        async with pool.acquire() as conn:
+            # Пока простой select всех записей
             rows = await conn.fetch(table.select())
 
         return [{key: value for key, value in row.items()} for row in rows]

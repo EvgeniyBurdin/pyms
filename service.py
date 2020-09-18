@@ -1,7 +1,7 @@
 """ Модуль настройки используемых сервером сущностей.
 """
 from connections import AsyncpgsaConnection, AsyncpgConnectionParams
-from storages import AsyncPostgresSQLAlchemyCore
+from storages import AsyncpgsaStore
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 
@@ -15,6 +15,6 @@ pg_connection_params = AsyncpgConnectionParams(
     password=POSTGRES_PASSWORD
 )
 
-storage = AsyncPostgresSQLAlchemyCore(
+storage = AsyncpgsaStore(
     connection=AsyncpgsaConnection(pg_connection_params)
 )
