@@ -1,19 +1,8 @@
 """ Модуль для классов хранилищ данных
 """
 from abc import ABC, abstractmethod
-from dataclasses import asdict
 
-from sqlalchemy import Table as SQLATable
-
-import tables as app_tables
 from connections import Connection
-
-# Соберем все таблицы в словарь, где ключ - имя таблицы
-TABLES = {
-    getattr(app_tables, attr_name).name:  getattr(app_tables, attr_name)
-    for attr_name in dir(app_tables)
-    if isinstance(getattr(app_tables, attr_name), SQLATable)
-}
 
 
 class Storage:
@@ -76,27 +65,20 @@ class AsyncpgsaStore(AsyncCRUDStorage):
         помощи библиотеки asyncpgsa.
     """
     async def create(self, query):
-        """ Вставка в таблицу. (еще в разработке)
-        """
-        table = TABLES[query.table_name]
-        query = asdict(query)
-        data = query['data']
-
-        pool = await self.connection.get()
-
-        async with pool.acquire() as conn:
-            await conn.fetchrow(table.insert().values(data))
+        pass
 
     async def read(self, query):
         """ Чтение из таблицы. (еще в разработке)
         """
-        table = TABLES[query.table_name]
+        print(query)  # Логирование запроса
 
-        pool = await self.connection.get()
-
-        async with pool.acquire() as conn:
-            # Пока простой select всех записей
-            rows = await conn.fetch(table.select())
+        try:
+            pool = await self.connection.get()
+            async with pool.acquire() as conn:
+                rows = await conn.fetch(query)
+        except Exception as error:
+            print(error)  # Логирование ошибки
+            raise
 
         return [{key: value for key, value in row.items()} for row in rows]
 
