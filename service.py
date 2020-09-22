@@ -1,17 +1,20 @@
 """ Модуль настройки используемых сервером сущностей.
 """
-from connections import AsyncPGConnection, AsyncPGConnectionParams
+from connections import AsyncpgsaConnection, AsyncpgConnectionParams
+from storages import AsyncpgsaStore
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 
-# Подключение к PostgreSQL ---------------------------------------------------
+# Хранилище на PostgreSQL ----------------------------------------------------
 
-pg_connection_params = AsyncPGConnectionParams(
-    POSTGRES_HOST,
-    POSTGRES_PORT,
-    POSTGRES_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD
+pg_connection_params = AsyncpgConnectionParams(
+    host=POSTGRES_HOST,
+    port=POSTGRES_PORT,
+    db=POSTGRES_DB,
+    user=POSTGRES_USER,
+    password=POSTGRES_PASSWORD
 )
 
-pg_connection = AsyncPGConnection(pg_connection_params)
+storage = AsyncpgsaStore(
+    connection=AsyncpgsaConnection(pg_connection_params)
+)

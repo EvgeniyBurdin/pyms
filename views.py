@@ -1,33 +1,30 @@
 """ Обработчики запросов.
 """
+from sqlalchemy import Table as SQLATable
+
+import tables as app_tables
 from api_decorators import api_method
-from data_classes.requests import SimpleParams
-from data_classes.responses import SimpleResult
-from service import pg_connection
-from tables import people as people_table
+from data_classes.requests import ReadParams
+from data_classes.responses import ReadResult
+from service import storage
+
+# Соберем все таблицы в словарь, где ключ - имя таблицы
+TABLES = {
+    getattr(app_tables, attr_name).name:  getattr(app_tables, attr_name)
+    for attr_name in dir(app_tables)
+    if isinstance(getattr(app_tables, attr_name), SQLATable)
+}
 
 
 @api_method
-async def simple(params: SimpleParams) -> SimpleResult:
-    """ Простой апи-метод (для примера).
+async def read(params: ReadParams) -> ReadResult:
+    """ Чтение из хранилища.
     """
-    query = params.query
-    # Просто напечатаем запрос
-    print('Request received:', query)
 
-    # Пример работы с БД
+    table = TABLES[params.table_name]
 
-    # Получим коннект
-    connection = await pg_connection.get()
+    query = table.select()  # Пока простой запрос на все записи таблицы
 
-    # Подготовим core-sqlalchemy запрос
-    core_sa_query = people_table.select().where(people_table.c.name == 'Ivan')
+    rows = await storage.read(query)
 
-    # Выполним запрос
-    async with connection.acquire() as conn:
-        row = await conn.fetch(core_sa_query)
-
-    # Просто вернем из метода строку с результатом запроса к БД
-    message = str(row)
-
-    return SimpleResult(message=message)
+    return ReadResult(name=params.table_name, length=len(rows), rows=rows)

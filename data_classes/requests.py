@@ -3,15 +3,26 @@
 from dataclasses import dataclass
 
 from data_classes.base import ApiDC
+from data_classes.schema import PeapleData
+from typing import Union, List
 
 
 @dataclass
-class SimpleParams(ApiDC):
-    """ Параматры для простого обработчика.
-
-        (для примера)
+class ReadParams(ApiDC):
+    """ Параметры для чтения из хранилища.
     """
-    query: str = "How are you?"
+    table_name: str
+    query: dict
+    limit: int = 1000
+    offset: int = 0
+
+
+@dataclass
+class CreateParams(ApiDC):
+    """ Параметры для создания записей в хранилище.
+    """
+    table_name: str
+    data: Union[List[PeapleData]]
 
 
 @dataclass

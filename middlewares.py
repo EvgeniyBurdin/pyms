@@ -4,6 +4,7 @@ from dataclasses import asdict
 from aiohttp import web
 
 from api_exeptions import InputValidationError
+from api_json_enc_dec import json_dumps
 from data_classes.requests import RequestDC
 from data_classes.responses import ErrorResult, ResponseDC
 
@@ -64,7 +65,8 @@ async def json_server(request, handler):
                 result=ErrorResult(error_type, msg, extra),
                 id=id_
             )),
-            status=400
+            status=400,
+            dumps=json_dumps
         )
 
     # Выполнение запроса -----------------------------------------------------
@@ -84,7 +86,8 @@ async def json_server(request, handler):
                 result=ErrorResult(error_type, msg, extra),
                 id=id_
             )),
-            status=500
+            status=500,
+            dumps=json_dumps
         )
 
-    return web.json_response(response)
+    return web.json_response(data=response, dumps=json_dumps)
