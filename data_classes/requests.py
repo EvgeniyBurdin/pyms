@@ -33,5 +33,5 @@ class RequestDC(ApiDC):
         :id:     Идентификатор запроса. Может быть установлен вызывающей
                  стороной для идентификации ответа.
     """
-    params: dict
+    params: Union[CreateParams, ReadParams]
     id: int = 0
