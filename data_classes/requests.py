@@ -11,7 +11,7 @@ from typing import Union, List
 class ReadParams(ApiDC):
     """ Параметры для чтения из хранилища.
     """
-    table_name: str
+    name: str
     query: dict
     limit: int = 1000
     offset: int = 0
@@ -21,7 +21,7 @@ class ReadParams(ApiDC):
 class CreateParams(ApiDC):
     """ Параметры для создания записей в хранилище.
     """
-    table_name: str
+    name: str
     data: Union[List[PeapleData]]
 
 

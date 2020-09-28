@@ -17,12 +17,13 @@ class TableNotFound(Exception):
 
 
 def get_table(name: str) -> SQLATable:
-
+    """ Находит таблицу с указанным в name именем и возвращает ее.
+    """
     try:
         table = TABLES[name]
 
-    except Exception:
-        message = f"Table '{name}' not found!"
+    except Exception as error:
+        message = f"Table '{name}' not found ({type(error).__name__})!"
         raise TableNotFound(message)
 
     return table
@@ -33,10 +34,10 @@ async def read(params: ReadParams) -> ReadResult:
     """ Чтение из хранилища.
     """
 
-    table = get_table(params.table_name)
+    table = get_table(params.name)
 
     query = storage.query_builder.read(table)
 
     rows = await storage.read(query)
 
-    return ReadResult(name=params.table_name, length=len(rows), rows=rows)
+    return ReadResult(name=params.name, length=len(rows), rows=rows)
