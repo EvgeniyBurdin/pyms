@@ -5,7 +5,7 @@ from query_builders import SQLAlchemyCoreBuilder
 from settings import (POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD,
                       POSTGRES_PORT, POSTGRES_USER)
 from storages import AsyncpgsaStore
-from components import get_components
+from components import classes as components_classes
 
 
 # Хранилище на PostgreSQL ----------------------------------------------------
@@ -20,5 +20,13 @@ pg_connection_params = AsyncpgConnectionParams(
 
 storage = AsyncpgsaStore(
     connection=AsyncpgsaConnection(pg_connection_params),
-    query_builder=SQLAlchemyCoreBuilder(components=get_components())
+    query_builder=SQLAlchemyCoreBuilder()
 )
+
+# ------
+
+methods = {}
+
+for component_class in components_classes:
+    component = component_class(storage=storage)
+    methods[f"{component.name}.read"] = component.read

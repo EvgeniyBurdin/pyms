@@ -12,11 +12,7 @@ class TableNotFound(Exception):
 class QueryBuilder:
     """ Базовый класс для построителей запросов.
     """
-    def __init__(self, components):
-        self.components = components
-
-    def get_component(self, name):
-        return self.components[name]
+    pass
 
 
 class SQLAlchemyCoreBuilder(QueryBuilder):
@@ -40,11 +36,9 @@ class SQLAlchemyCoreBuilder(QueryBuilder):
 
         return table
 
-    def read_table(self, params):
+    def read_table(self, name):
 
-        table = self.get_table(params.name)
-        component = self.get_component(params.name)
-        print('===', component)
+        table = self.get_table(name)
 
         query = table.select()
 

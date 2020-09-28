@@ -1,18 +1,18 @@
 """ Модуль датаклассов запросов.
 """
-from dataclasses import dataclass, field
-from typing import List, Union
+from dataclasses import dataclass
+from typing import List, Union, Optional
 
 from data_classes.base import ApiDC
 from data_classes.schema import EmailData, TeamData, UserData, UsersInTeamsData
 
 
 @dataclass
-class ReadParams(ApiDC):
-    """ Параметры для чтения из хранилища.
+class Params(ApiDC):
+    """ Параметры для чтения из хранилища. временно
     """
-    name: str
-    fields: List[str] = field(default_factory=list)
+    method: str
+    fields: Optional[List[str]] = None
     limit: int = 1000
     offset: int = 0
 
@@ -36,5 +36,5 @@ class RequestDC(ApiDC):
         :id:     Идентификатор запроса. Может быть установлен вызывающей
                  стороной для идентификации ответа.
     """
-    params: Union[CreateParams, ReadParams]
+    params: Union[CreateParams, Params]
     id: int = 0

@@ -20,10 +20,10 @@ class ErrorResult(ApiDC):
 
 
 @dataclass
-class ReadResult(ApiDC):
+class Result(ApiDC):
     """ Результат чтения.
     """
-    name: str
+    method: str
     length: int
     rows: list
 

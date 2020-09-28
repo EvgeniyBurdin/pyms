@@ -1,17 +1,17 @@
 """ Обработчики запросов.
 """
 from api_decorators import api_method
-from data_classes.requests import ReadParams
-from data_classes.responses import ReadResult
-from service import storage
+from data_classes.requests import Params
+from data_classes.responses import Result
+from service import methods
 
 
 @api_method
-async def read(params: ReadParams) -> ReadResult:
-    """ Чтение из хранилища.
+async def main(params: Params) -> Result:
     """
-    query = storage.query_builder.read_table(params)
+    """
+    method = methods[params.method]
 
-    rows = await storage.read(query)
+    rows = await method(params)
 
-    return ReadResult(name=params.name, length=len(rows), rows=rows)
+    return Result(method=params.method, length=len(rows), rows=rows)
