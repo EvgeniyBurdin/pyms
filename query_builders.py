@@ -38,6 +38,6 @@ class SQLAlchemyCoreBuilder(QueryBuilder):
 
         table = get_table(params.name)
 
-        query = table.select()  # Запрос на все записи таблицы
+        query = table.select()
 
         return query
