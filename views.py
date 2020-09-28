@@ -17,7 +17,7 @@ class TableNotFound(Exception):
 
 
 def get_table(name: str) -> SQLATable:
-    """ Находит таблицу с указанным в name именем и возвращает ее.
+    """ Возвращает таблицу с указанным в name именем.
     """
     try:
         table = TABLES[name]
