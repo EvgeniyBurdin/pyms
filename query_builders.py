@@ -8,8 +8,9 @@ class QueryBuilder:
 
 class SQLAlchemyCoreBuilder(QueryBuilder):
 
-    def read(self, table):
+    def read_table(self, table, query=None):
 
-        query = table.select()  # Пока простой запрос на все записи таблицы
+        if query is None:
+            query = table.select()  # "Запрос на все записи таблицы
 
         return query
