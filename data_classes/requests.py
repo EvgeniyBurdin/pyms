@@ -1,10 +1,10 @@
 """ Модуль датаклассов запросов.
 """
 from dataclasses import dataclass
+from typing import List, Union
 
 from data_classes.base import ApiDC
-from data_classes.schema import PeapleData
-from typing import Union, List
+from data_classes.schema import EmailData, TeamData, UserData, UsersInTeamsData
 
 
 @dataclass
@@ -22,7 +22,10 @@ class CreateParams(ApiDC):
     """ Параметры для создания записей в хранилище.
     """
     name: str
-    data: Union[List[PeapleData]]
+    data: Union[
+        List[EmailData], List[TeamData], List[UserData],
+        List[UsersInTeamsData],
+    ]
 
 
 @dataclass
