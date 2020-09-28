@@ -64,6 +64,8 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи библиотеки asyncpgsa.
     """
+    query_builder = None
+
     async def create(self, query):
         pass
 
