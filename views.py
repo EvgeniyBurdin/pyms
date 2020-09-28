@@ -33,7 +33,6 @@ def get_table(name: str) -> SQLATable:
 async def read(params: ReadParams) -> ReadResult:
     """ Чтение из хранилища.
     """
-
     table = get_table(params.name)
 
     query = storage.query_builder.read(table)
