@@ -1,19 +1,13 @@
 """ Обработчики запросов.
 """
-from sqlalchemy import Table as SQLATable
-
-import tables as app_tables
+from tables import metadata
 from api_decorators import api_method
 from data_classes.requests import ReadParams
 from data_classes.responses import ReadResult
 from service import storage
 
 # Соберем все таблицы в словарь, где ключ - имя таблицы
-TABLES = {
-    getattr(app_tables, attr_name).name:  getattr(app_tables, attr_name)
-    for attr_name in dir(app_tables)
-    if isinstance(getattr(app_tables, attr_name), SQLATable)
-}
+TABLES = metadata.tables
 
 
 @api_method
