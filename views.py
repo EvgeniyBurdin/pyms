@@ -35,7 +35,7 @@ async def read(params: ReadParams) -> ReadResult:
 
     table = get_table(params.table_name)
 
-    query = table.select()  # Пока простой запрос на все записи таблицы
+    query = storage.query_builder.read(table)
 
     rows = await storage.read(query)
 

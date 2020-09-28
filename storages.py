@@ -3,14 +3,16 @@
 from abc import ABC, abstractmethod
 
 from connections import Connection
+from query_builders import QueryBuilder
 
 
 class Storage:
     """ Базовый класс хранилища данных
     """
-    def __init__(self, connection: Connection):
+    def __init__(self, connection: Connection, query_builder: QueryBuilder):
 
         self.connection = connection
+        self.query_builder = query_builder
 
 
 class AsyncStorage(Storage):
@@ -64,8 +66,6 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи библиотеки asyncpgsa.
     """
-    query_builder = None
-
     async def create(self, query):
         pass
 
