@@ -27,9 +27,9 @@ class EmailData(ApiDC):
         :address: Адрес электронной почты.
         :user_id: Идентификатор пользователя (строка UUID).
     """
-    id: int
     address: str
     user_id: str
+    id: Optional[int] = None
 
 
 @dataclass
