@@ -7,6 +7,10 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 metadata = MetaData()
 
 
+def get_tables() -> dict:
+    return metadata.tables
+
+
 user = Table(
     "user", metadata,
 
