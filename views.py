@@ -10,8 +10,10 @@ from service import methods
 async def main(params: Params) -> Result:
     """
     """
-    method = methods[params.method]
+    method_name = f"{params.component}.{params.query.method}"
+    method = methods[method_name]
+    print(method)
 
-    rows = await method(params)
+    rows = await method(params.query)
 
-    return Result(method=params.method, length=len(rows), rows=rows)
+    return Result(method=method_name, length=len(rows), rows=rows)

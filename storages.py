@@ -3,16 +3,14 @@
 from abc import ABC, abstractmethod
 
 from connections import Connection
-from query_builders import QueryBuilder
 
 
 class Storage:
     """ Базовый класс хранилища данных
     """
-    def __init__(self, connection: Connection, query_builder: QueryBuilder):
+    def __init__(self, connection: Connection):
 
         self.connection = connection
-        self.query_builder = query_builder
 
 
 class AsyncStorage(Storage):

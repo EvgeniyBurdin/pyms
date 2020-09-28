@@ -18,15 +18,15 @@ pg_connection_params = AsyncpgConnectionParams(
     password=POSTGRES_PASSWORD
 )
 
-storage = AsyncpgsaStore(
-    connection=AsyncpgsaConnection(pg_connection_params),
-    query_builder=SQLAlchemyCoreBuilder()
-)
+storage = AsyncpgsaStore(connection=AsyncpgsaConnection(pg_connection_params))
 
 # ------
 
+query_builder = SQLAlchemyCoreBuilder()
+
+# ------
 methods = {}
 
 for component_class in components_classes:
-    component = component_class(storage=storage)
+    component = component_class(storage=storage, query_builder=query_builder)
     methods[f"{component.name}.read"] = component.read

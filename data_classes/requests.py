@@ -1,20 +1,28 @@
 """ Модуль датаклассов запросов.
 """
 from dataclasses import dataclass
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Literal
 
 from data_classes.base import ApiDC
 from data_classes.schema import EmailData, TeamData, UserData, UsersInTeamsData
 
 
 @dataclass
-class Params(ApiDC):
-    """ Параметры для чтения из хранилища. временно
+class ReadQuery(ApiDC):
+    """ Запрос на чтение.
     """
-    method: str
+    method: Literal['read']
     fields: Optional[List[str]] = None
     limit: int = 1000
     offset: int = 0
+
+
+@dataclass
+class Params(ApiDC):
+    """ Параметры запроса.
+    """
+    component: str
+    query: Union[ReadQuery]
 
 
 @dataclass

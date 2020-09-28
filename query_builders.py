@@ -36,9 +36,9 @@ class SQLAlchemyCoreBuilder(QueryBuilder):
 
         return table
 
-    def read_table(self, name):
+    def read_table(self, table_name, query):
 
-        table = self.get_table(name)
+        table = self.get_table(table_name)
 
         query = table.select()
 
