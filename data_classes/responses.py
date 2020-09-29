@@ -1,7 +1,7 @@
 """ Модуль датаклассов ответов.
 """
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional, Union, Any
 
 from data_classes.base import ApiDC
 
@@ -24,7 +24,7 @@ class Result(ApiDC):
     """ Результат чтения.
     """
     name: str
-    data: Union[list, dict]
+    data: Any
 
 
 @dataclass

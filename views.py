@@ -5,12 +5,15 @@ from data_classes.requests import (CreateEmailParams, DeleteEmailParams,
                                    ReadEmailParams, UpdateEmailParams)
 from data_classes.responses import Result
 from service import storage
+from tables import email
 
 
 @api_method
 async def create_email(params: CreateEmailParams) -> Result:
 
-    query = ""
+    query = email.insert().values(
+        address=params.address, user_id=params.user_id
+    )
 
     result = await storage.create(query)
 
@@ -20,7 +23,7 @@ async def create_email(params: CreateEmailParams) -> Result:
 @api_method
 async def read_email(params: ReadEmailParams) -> Result:
 
-    query = ""
+    query = email.select().where(email.c.id == params.id)
 
     result = await storage.read(query)
 
@@ -30,7 +33,9 @@ async def read_email(params: ReadEmailParams) -> Result:
 @api_method
 async def update_email(params: UpdateEmailParams) -> Result:
 
-    query = ""
+    query = email.update().values(address=params.address).where(
+        email.c.id == params.id
+    )
 
     result = await storage.update(query)
 
@@ -40,8 +45,8 @@ async def update_email(params: UpdateEmailParams) -> Result:
 @api_method
 async def delete_email(params: DeleteEmailParams) -> Result:
 
-    query = ""
+    query = email.delete().where(email.c.id == params.id)
 
-    result = await storage.read(query)
+    result = await storage.delete(query)
 
     return Result(name="email", data=result)

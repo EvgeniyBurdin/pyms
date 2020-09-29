@@ -64,11 +64,28 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи библиотеки asyncpgsa.
     """
+    async def _execute(self, query):
+        """ (логирование и ошибку вынести в декоратор)
+        """
+        print(query)  # Логирование запроса
+
+        try:
+            pool = await self.connection.get()
+            async with pool.acquire() as conn:
+                result = await conn.execute(query)
+        except Exception as error:
+            print(error)  # Логирование ошибки
+            raise
+
+        return result
+
     async def create(self, query):
-        pass
+        """ Запрос записи
+        """
+        return await self._execute(query)
 
     async def read(self, query):
-        """ Чтение из таблицы. (еще в разработке)
+        """ Запрос чтения (логирование и ошибку вынести в декоратор)
         """
         print(query)  # Логирование запроса
 
@@ -83,7 +100,12 @@ class AsyncpgsaStore(AsyncCRUDStorage):
         return [{key: value for key, value in row.items()} for row in rows]
 
     async def update(self, query):
-        pass
+        """ Запрос изменения
+        """
+        return await self._execute(query)
+
 
     async def delete(self, query):
-        pass
+        """ Запрос удаления
+        """
+        return await self._execute(query)
