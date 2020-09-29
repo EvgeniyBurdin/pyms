@@ -1,31 +1,33 @@
 """ Модуль датаклассов запросов.
 """
-from dataclasses import dataclass, field
-from typing import List, Union
+from dataclasses import dataclass
+from typing import Optional
 
 from data_classes.base import ApiDC
-from data_classes.schema import EmailData, TeamData, UserData, UsersInTeamsData
 
 
 @dataclass
-class ReadParams(ApiDC):
-    """ Параметры для чтения из хранилища.
+class CreateEmailParams(ApiDC):
+    """ Параметры для создания email.
     """
-    name: str
-    fields: List[str] = field(default_factory=list)
-    limit: int = 1000
-    offset: int = 0
+    address: str
+    user_id: str
+    id: Optional[int] = None
 
 
 @dataclass
-class CreateParams(ApiDC):
-    """ Параметры для создания записей в хранилище.
+class ReadEmailParams(ApiDC):
+    """ Параметры для чтения email.
     """
-    name: str
-    data: Union[
-        List[EmailData], List[TeamData], List[UserData],
-        List[UsersInTeamsData],
-    ]
+    id: int
+
+
+@dataclass
+class UpdateEmailParams(ApiDC):
+    """ Параметры для обновления email.
+    """
+    id: int
+    address: str
 
 
 @dataclass

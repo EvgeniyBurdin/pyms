@@ -20,20 +20,11 @@ class ErrorResult(ApiDC):
 
 
 @dataclass
-class ReadResult(ApiDC):
+class Result(ApiDC):
     """ Результат чтения.
     """
     name: str
-    length: int
-    rows: list
-
-
-@dataclass
-class CreateResult(ApiDC):
-    """ Результат чтения.
-    """
-    name: str
-    message: str = "ok"
+    data: Union[list, dict]
 
 
 @dataclass

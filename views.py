@@ -1,17 +1,47 @@
 """ Обработчики запросов.
 """
 from api_decorators import api_method
-from data_classes.requests import ReadParams
-from data_classes.responses import ReadResult
+from data_classes.requests import (CreateEmailParams, DeleteEmailParams,
+                                   ReadEmailParams, UpdateEmailParams)
+from data_classes.responses import Result
 from service import storage
 
 
 @api_method
-async def read(params: ReadParams) -> ReadResult:
-    """ Чтение из хранилища.
-    """
-    query = storage.query_builder.read_table(params)
+async def create_email(params: CreateEmailParams) -> Result:
 
-    rows = await storage.read(query)
+    query = ""
 
-    return ReadResult(name=params.name, length=len(rows), rows=rows)
+    result = await storage.create(query)
+
+    return Result(name="email", data=result)
+
+
+@api_method
+async def read_email(params: ReadEmailParams) -> Result:
+
+    query = ""
+
+    result = await storage.read(query)
+
+    return Result(name="email", data=result)
+
+
+@api_method
+async def update_email(params: UpdateEmailParams) -> Result:
+
+    query = ""
+
+    result = await storage.update(query)
+
+    return Result(name="email", data=result)
+
+
+@api_method
+async def delete_email(params: DeleteEmailParams) -> Result:
+
+    query = ""
+
+    result = await storage.read(query)
+
+    return Result(name="email", data=result)
