@@ -31,6 +31,13 @@ class UpdateEmailParams(ApiDC):
 
 
 @dataclass
+class DeleteEmailParams(ApiDC):
+    """ Параметры для удаления email.
+    """
+    id: int
+
+
+@dataclass
 class RequestDC(ApiDC):
     """ Запрос к сервису.
 
