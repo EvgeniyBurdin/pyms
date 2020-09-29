@@ -104,7 +104,6 @@ class AsyncpgsaStore(AsyncCRUDStorage):
         """
         return await self._execute(query)
 
-
     async def delete(self, query):
         """ Запрос удаления
         """
