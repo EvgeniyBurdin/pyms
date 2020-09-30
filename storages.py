@@ -3,6 +3,8 @@
 import functools
 from abc import ABC, abstractmethod
 
+from sqlalchemy.dialects import postgresql
+
 from connections import Connection
 
 
@@ -12,13 +14,17 @@ def storage_request(method):
     @functools.wraps(method)
     async def wrapper(self, query):
 
-        print('-'*40, '\n', query)  # Логирование запроса
+        print('-'*40)
+        print(query.compile(
+            dialect=postgresql.dialect(),
+            compile_kwargs={"literal_binds": True}
+        ))  # Лог запроса
 
         try:
             result = await method(self, query)
 
         except Exception as error:
-            print(error)  # Логирование ошибки
+            print(error)  # Лог ошибки
             raise
 
         return result
