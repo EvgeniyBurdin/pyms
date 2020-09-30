@@ -14,11 +14,12 @@ def storage_request(method):
     @functools.wraps(method)
     async def wrapper(self, query):
 
-        print('-'*40)
-        print(query.compile(
-            dialect=postgresql.dialect(),
-            compile_kwargs={"literal_binds": True}
-        ))  # Лог запроса
+        params = {"compile_kwargs": {"literal_binds": True}}
+        if self.dialect is not None:
+            params['dialect'] = self.dialect.dialect()
+
+        print('-'*40) # Лог запроса
+        print(query.compile(**params))
 
         try:
             result = await method(self, query)
@@ -38,6 +39,11 @@ class Storage:
     def __init__(self, connection: Connection):
 
         self.connection = connection
+        self.dialect = self.get_dialect()
+
+    def get_dialect(self):
+
+        return None
 
 
 class AsyncStorage(Storage):
@@ -91,6 +97,11 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи библиотеки asyncpgsa.
     """
+    def get_dialect(self):
+        """ Возвращает используемый в SQLAlchemy диалект БД
+        """
+        return postgresql
+
     @storage_request
     async def _execute(self, query):
         """ Запрос для любого изменения
