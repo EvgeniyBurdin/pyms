@@ -18,7 +18,7 @@ def storage_request(method):
         if self.dialect is not None:
             params['dialect'] = self.dialect.dialect()
 
-        print('-'*40) # Лог запроса
+        print('-'*40)  # Лог запроса
         print(query.compile(**params))
 
         try:
