@@ -1,8 +1,29 @@
 """ Модуль для классов хранилищ данных
 """
+import functools
 from abc import ABC, abstractmethod
 
 from connections import Connection
+
+
+def storage_request(method):
+    """ Декоратор для запроса к хранилищу
+    """
+    @functools.wraps(method)
+    async def wrapper(self, query):
+
+        print('-'*40, '\n', query)  # Логирование запроса
+
+        try:
+            result = await method(self, query)
+
+        except Exception as error:
+            print(error)  # Логирование ошибки
+            raise
+
+        return result
+
+    return wrapper
 
 
 class Storage:
@@ -64,18 +85,13 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     """ Класс асинхронного хранилища данных Postgres с доступом при
         помощи библиотеки asyncpgsa.
     """
+    @storage_request
     async def _execute(self, query):
-        """ (логирование и ошибку вынести в декоратор)
+        """ Запрос для любого изменения
         """
-        print(query)  # Логирование запроса
-
-        try:
-            pool = await self.connection.get()
-            async with pool.acquire() as conn:
-                result = await conn.execute(query)
-        except Exception as error:
-            print(error)  # Логирование ошибки
-            raise
+        pool = await self.connection.get()
+        async with pool.acquire() as conn:
+            result = await conn.execute(query)
 
         return result
 
@@ -84,23 +100,18 @@ class AsyncpgsaStore(AsyncCRUDStorage):
         """
         return await self._execute(query)
 
+    @storage_request
     async def read(self, query):
-        """ Запрос чтения (логирование и ошибку вынести в декоратор)
+        """ Запрос чтения
         """
-        print(query)  # Логирование запроса
-
-        try:
-            pool = await self.connection.get()
-            async with pool.acquire() as conn:
-                rows = await conn.fetch(query)
-        except Exception as error:
-            print(error)  # Логирование ошибки
-            raise
+        pool = await self.connection.get()
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(query)
 
         return [{key: value for key, value in row.items()} for row in rows]
 
     async def update(self, query):
-        """ Запрос изменения
+        """ Запрос обновления
         """
         return await self._execute(query)
 
