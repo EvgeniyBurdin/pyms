@@ -3,8 +3,9 @@
 import functools
 from abc import ABC, abstractmethod
 
-from sqlalchemy.dialects import postgresql
+from sqlalchemy.dialects import postgresql  # noqa
 
+from api_json_enc_dec import json_dumps
 from connections import Connection
 
 
@@ -14,12 +15,20 @@ def storage_request(method):
     @functools.wraps(method)
     async def wrapper(self, query):
 
-        params = {"compile_kwargs": {"literal_binds": True}}
+        compile_params = {}
         if self.dialect is not None:
-            params['dialect'] = self.dialect.dialect()
+            compile_params['dialect'] = self.dialect.dialect()
 
-        print('-'*40)  # Лог запроса
-        print(query.compile(**params))
+        raw_sql = query.compile(**compile_params)
+        raw_sql_str = str(raw_sql)
+
+        print('-'*40)
+
+        for sql_param_name in raw_sql.params.keys():
+            value = json_dumps(raw_sql.params[sql_param_name])
+            raw_sql_str = raw_sql_str.replace(f':{sql_param_name}', value)
+
+        print(raw_sql_str)  # Лог запроса
 
         try:
             result = await method(self, query)
@@ -100,7 +109,7 @@ class AsyncpgsaStore(AsyncCRUDStorage):
     def get_dialect(self):
         """ Возвращает используемый в SQLAlchemy диалект БД
         """
-        return postgresql
+        return None  # postgresql
 
     @storage_request
     async def _execute(self, query):
