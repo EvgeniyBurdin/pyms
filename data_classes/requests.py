@@ -38,6 +38,14 @@ class DeleteEmailParams(ApiDC):
 
 
 @dataclass
+class ReadUserEmailsParams(ApiDC):
+    """ Параметры чтения email'ов пользователя.
+    """
+    user_id: str
+    email_contains: str = ""
+
+
+@dataclass
 class RequestDC(ApiDC):
     """ Запрос к сервису.
 
