@@ -36,4 +36,4 @@ async def read_user_emails(params: ReadUserEmailsParams) -> Result:
 
     result = await storage.read(query)
 
-    return Result(name="email", data=result)
+    return Result(name="user_emails", data=result)
