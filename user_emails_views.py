@@ -30,6 +30,10 @@ async def read_user_emails(params: ReadUserEmailsParams) -> Result:
         # Конкретизируем запрос только емейлами, которые содержат подстроку
         query = query.where(email.c.address.like(f"%{params.email_contains}%"))
 
+    if params.user_id:
+        # Конкретизируем запрос только емейлами, определенного юзера
+        query = query.where(user.c.id == params.user_id)
+
     result = await storage.read(query)
 
     return Result(name="email", data=result)

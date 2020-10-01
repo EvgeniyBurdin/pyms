@@ -41,7 +41,7 @@ class DeleteEmailParams(ApiDC):
 class ReadUserEmailsParams(ApiDC):
     """ Параметры чтения email'ов пользователя.
     """
-    user_id: str
+    user_id: str = ""
     email_contains: str = ""
 
 
