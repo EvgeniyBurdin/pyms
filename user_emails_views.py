@@ -13,7 +13,7 @@ def users_emails() -> select:
     """ Заготовка для запросов по емейлам пользователя
     """
     query = select(
-        [user.c.name, email.c.address]
+        [user.c.name, email.c.address, user.c.id, user.c.meta]
     ).where(
         user.c.id == email.c.user_id
     )
