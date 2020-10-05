@@ -7,6 +7,14 @@ from data_classes.base import ApiDC
 
 
 @dataclass
+class CreateUserParams(ApiDC):
+    """ Параметры для создания email.
+    """
+    name: str
+    meta: dict
+
+
+@dataclass
 class CreateEmailParams(ApiDC):
     """ Параметры для создания email.
     """
