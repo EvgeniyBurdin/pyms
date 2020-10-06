@@ -8,7 +8,6 @@ from typing import Any
 import asyncpg
 import asyncpgsa
 
-from api_json_enc_dec import json_dumps
 from settings import DatabaseSettingsError
 
 
@@ -107,7 +106,7 @@ class AsyncpgConnection(AsyncConnection):
         """
         await connection.set_type_codec(
             'jsonb',
-            encoder=json_dumps, decoder=json.loads, schema='pg_catalog',
+            encoder=str, decoder=json.loads, schema='pg_catalog'
         )
 
     async def create_pool(self, **params) -> asyncpg.pool.Pool:
